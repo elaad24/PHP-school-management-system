@@ -13,7 +13,7 @@ if(!function_exists('last_value')){
      function last_value($field_name){
          return isset($_REQUEST[$field_name])? $_REQUEST[$field_name] : '';  
      }
-
+    }
      
      if(!function_exists('login_user')){
 
@@ -64,7 +64,63 @@ if(!function_exists('last_value')){
          }
      }
 
-}
+
+     if(!function_exists('grade_students_table_row')){
+                
+        function grade_students_table_row($grade,$iternum){
+            /***
+             * to make the tables for STUDENTS  
+             * take row from asositive array and 
+             * change it so it will be display in html table form row 
+             * 
+             * @param array -> a row from the full array from the db 
+             * @param integer -> the number of iteration - to dislay in the table   
+            *
+            * @return string -> return a full row for table in html  
+             */
+            extract($grade);
+            $count=$iternum+1;
+        echo  " <tr>
+                <th scope='row'>$count</th>
+                <td>$date</td>
+                <td>$subject</td>
+                <td>$test_subject</td>
+                <td>$grade</td>
+                <td>avrge</td>
+                </tr>
+                ";
+            }
+     }
+
+
+     if(!function_exists('grade_teachers_table_row')){
+                
+        function grade_teachers_table_row($grade,$iternum){
+            /***
+             * to make the table for TEACHERS 
+             * take row from asositive array and 
+             * change it so it will be display in html table form row 
+             * 
+             * @param array -> a row from the full array from the db 
+             * @param integer -> the number of iteration - to dislay in the table   
+            *
+            * @return string -> return a full row for table in html  
+             */
+            extract($grade);
+            $count=$iternum+1;
+        echo  " <tr>
+                <th scope='row'>$count</th>
+                <td>$class</td>
+                <td>$name</td>
+                <td>$subject</td>
+                <td>$test_subject</td>
+                <td>$grade</td>
+                <td>$date</td>
+                <td>avrge</td>
+                </tr>
+                ";
+            }
+     }
 
 
 ?>

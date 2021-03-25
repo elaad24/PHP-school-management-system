@@ -1,19 +1,27 @@
 <?php 
 
-session_start();
-
-require_once "app/db_config.php";
 require_once "app/helpers.php";
+require_once "app/db_config.php";
+
+
+session_start();
+if (!user_auth()) {
+    header('location: ./');
+    exit();
+}
+
 $title_page = 'grades';
 include_once "tpl/header.php" ;
 
 
 $link=mysqli_connect(DB_HOST,DB_USER,DB_PWD,DB_NAME);
 
+$sort=isset($_POST['sort'])? $_POST['sort'] : "upload_time";
+ /* $sort will be the var to order how to sort the list  */
+
 if ($_SESSION['permission_group']==2){
- /***
-  * the information that STUDENTS will see
- */
+ 
+    /* the information that STUDENTS will see */
 
     $student_id=$_SESSION['user_id'];
     
@@ -23,47 +31,69 @@ if ($_SESSION['permission_group']==2){
     g.grade AS 'grade' ,
     DATE_FORMAT(g.upload_time , '%ss') AS 'upload_time' 
     FROM grades g 
-    WHERE student_id =$student_id ";
+    WHERE student_id =$student_id 
+    ORDER BY $sort DESC";
     
     
     $result=mysqli_query($link,$sql);
     
-    
-    
     if($result && mysqli_num_rows($result)>0){
         
-
          $grades=mysqli_fetch_all($result,MYSQLI_ASSOC);
-
-         
+ 
         }
 
     global $grades;
     
+}
 
-function grade_table_row($grade,$iternum){
-    /***
-     * take row from asositive array and 
-     * change it so it will be display in html table form row 
-     * 
-     * @param array -> a row from the full array from the db 
-     * @param integer -> the number of iteration - to dislay in the table   
-    */
-    extract($grade);
-    $count=$iternum+1;
-  echo  " <tr>
-        <th scope='row'>$count</th>
-        <td>$date</td>
-        <td>$subject</td>
-        <td>$test_subject</td>
-        <td>$grade</td>
-        <td>avrge</td>
-        </tr>
-        ";
+if ($_SESSION['permission_group']==1){
+
+    
+    #check if there is a search for specific student
+    $specific_user=isset($_POST['student_name'])? $specific_user=$_POST['student_name'] :'null';
+    # if there isn't and the user tring to sort by any way
+    # the search is empty string - so check bolean 
+    # and becose empty string as boolean is false the if happens 
+
+    if(!boolval($specific_user)){
+        unset($specific_user);
     }
+    
+   
+    
+    # check if there is var specific user ,
+    # if there is so add a where query to the sql querry 
+    # if there isnt make the var as nothing -> name not eqel to "1" so everything .
+   $where=isset($specific_user)? "WHERE name='$specific_user'" : 'WHERE name!="1" ' ;
+   
+    
+     $sql="SELECT g.subject AS 'subject',
+     g.test_subject AS 'test_subject' ,
+      DATE_FORMAT(g.date,'%d/%m/%Y') AS 'date' ,
+     g.grade AS 'grade' ,
+     DATE_FORMAT(g.upload_time , '%ss') AS 'upload_time' ,
+     u.name AS 'name',
+     u.class AS 'class'
+     FROM grades g  
+     LEFT JOIN users u
+     ON g.student_id = u.id
+     $where
+    ORDER BY $sort DESC ";
+
+$result=mysqli_query($link,$sql);
+    
+    if($result && mysqli_num_rows($result)>0){
+        
+         $grades=mysqli_fetch_all($result,MYSQLI_ASSOC);
+ 
+        }
+
+    global $grades;
 
 }
 
+unset($_POST['student_name']);
 ?>
 
 
@@ -86,30 +116,100 @@ function grade_table_row($grade,$iternum){
                     class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
                         <h3 class="m-auto text-primary ">Grades </h3>
+                    
+                  <?php 
+                      /* students grades table */
+                          if ($_SESSION['permission_group']==2):
+                      ?>
+                        <form method="POST" action="" class=" mt-2 col-lg-4 col-sm-12">
+                        <label for="sort">sort by :</label>
+                        <select name="sort" id="sort"> 
+                        <option value="date">new to old</option>
+                        <option value="grade">grades</option>
+                        <option value="subject">subjects</option>
+                        </select>
+                        
+                        <input type="submit" value="sort !" class="ml-2 btn btn-primary">
+                        
+                        </form>
 
-                        <table class="table table-striped mt-3">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Subject</th>
-                                    <th scope="col">Test Subject</th>
-                                    <th scope="col">Grade</th>
-                                    <th scope="col">avrg</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                            <?php endif  ?>  
+
 
                             <?php 
-                            for($i=0;$i<count($grades);$i++){
-                                grade_table_row($grades[$i],$i);
+                            /* students grades table */
+                            if ($_SESSION['permission_group']==2):
+                                ?>
 
-                            }
+                                <table class="table table-striped mt-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col">Test Subject</th>
+                                        <th scope="col">Grade</th>
+                                        <th scope="col">avrg</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                            <?php
+                                    for($i=0;$i<count($grades);$i++)
+                                    {
+                                        grade_students_table_row($grades[$i],$i);
+                                    }
+                               endif 
+                            ?> 
+
                             
-                            /* foreach($grades as $grade){
-                                grade_table_row($grade,$grades[$grade]);
+                                <?php 
+                            /* teachers grades table */
+                                if ($_SESSION['permission_group']==1):
+                            ?>
 
-                            } */?>  
+                        <form method="POST" action="" class=" mt-2 col-lg-4 col-sm-12">
+                        <label for="sort">sort by :</label>
+                        <select name="sort" id="sort"> 
+                        <option value="date">new to old</option>
+                        <option value="grade">grades</option>
+                        <option value="subject">subjects</option>
+                        <option value="name">names</option>
+                        <option value="class">class</option>
+                        </select>
+                        
+                     
+                        <input class="form-control my-2 col-lg-8 col-sm-12" name="student_name" type="search" 
+                                placeholder="Search by student name :" >
+
+                        <input type="submit" value="sort !" class="ml-2 btn btn-primary">
+                        
+                        </form>
+
+                        <table class="table table-striped mt-3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Student class</th>
+                                        <th scope="col">Student name</th>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col">Test Subject</th>
+                                        <th scope="col">Grade</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">avrg</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                            <?php
+                                    for($i=0;$i<count($grades);$i++)
+                                    {
+                                        grade_teachers_table_row($grades[$i],$i);
+                                    }
+                               endif 
+                            ?> 
+
                            
                             </tbody>
                         </table>

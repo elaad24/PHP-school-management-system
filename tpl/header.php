@@ -1,4 +1,8 @@
-<?php define('LOGO', '<i class="fas fa-graduation-cap"></i> Management System'); 
+<?php 
+
+#the header MUST be after the user_auth() to work properly ! 
+
+define('LOGO', '<i class="fas fa-graduation-cap"></i> Management System'); 
 require_once "./app/helpers.php"
 ?>
 
