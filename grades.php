@@ -47,21 +47,20 @@ if ($_SESSION['permission_group']==2){
     
 }
 
-if ($_SESSION['permission_group']==1){
+if ($_SESSION['permission_group']==1 ){
 
     
     #check if there is a search for specific student
-    $specific_user=isset($_POST['student_name'])? $specific_user=$_POST['student_name'] :'null';
+    $specific_user=isset($_POST['student_name'])? $specific_user=$_POST['student_name'] :"0";
     # if there isn't and the user tring to sort by any way
     # the search is empty string - so check bolean 
-    # and becose empty string as boolean is false the if happens 
+    # and becose 0 string as boolean is false the if happens 
 
     if(!boolval($specific_user)){
         unset($specific_user);
     }
     
-   
-    
+  
     # check if there is var specific user ,
     # if there is so add a where query to the sql querry 
     # if there isnt make the var as nothing -> name not eqel to "1" so everything .
