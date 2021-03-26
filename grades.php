@@ -60,12 +60,36 @@ if ($_SESSION['permission_group']==1 ){
         unset($specific_user);
     }
     
-  
+    
     # check if there is var specific user ,
-    # if there is so add a where query to the sql querry 
-    # if there isnt make the var as nothing -> name not eqel to "1" so everything .
-   $where=isset($specific_user)? "WHERE name='$specific_user'" : 'WHERE name!="1" ' ;
-   
+    # if there is check if the name in the users DB , if it is so add a-  where query to the main sql querry 
+    # if the name not on th users DB make pop up to infer the user that the name worng 
+    # and make the var as nothing -> name not eqel to "1" so everything .
+    $where=isset($specific_user)? "WHERE name='$specific_user'" : 'WHERE name!="1" ' ;
+
+    $sql_user_name_search="SELECT u.name FROM users u";
+
+    $result_user_name_search=mysqli_query($link,$sql_user_name_search);
+
+    if($result_user_name_search && mysqli_num_rows($result_user_name_search)>0){
+        
+        $result_user_name_search=mysqli_fetch_all($result_user_name_search);
+        
+        echo "</br>";
+        $user_list=[];
+
+        foreach($result_user_name_search as $name){
+            array_push($user_list,$name[0]);
+        }
+        
+        if(isset($specific_user) && in_array($specific_user,$user_list)){
+            $where="WHERE name='$specific_user'";
+         }elseif(isset($specific_user) && !in_array($specific_user,$user_list)){
+             echo "<script>alert('the user name is worng try again ')</script>";
+             $where= 'WHERE name!="1" ';
+         }
+
+   }
     
      $sql="SELECT g.subject AS 'subject',
      g.test_subject AS 'test_subject' ,
@@ -91,6 +115,44 @@ $result=mysqli_query($link,$sql);
     global $grades;
 
 }
+
+            /***
+             * to make the feacher in grades table 
+             * to see how the grade relative to the average
+             *  
+             * - make an array of all subsubject with there average .
+             * 
+             # required to all the users in the site 
+             * */
+            
+     $sql_subsubject="SELECT DISTINCT g.test_subject FROM grades g ";
+     $result_subsubjects=mysqli_query($link,$sql_subsubject);
+     
+     if($result_subsubjects && mysqli_num_rows($result_subsubjects)>0){
+ 
+         $arr_avrge_grades=[];
+         $subsubjects=mysqli_fetch_all($result_subsubjects);
+ 
+          foreach($subsubjects as $sub ){
+             
+             $avrge_grade_subject=$sub[0];
+             
+             $sql_avreg="SELECT ROUND( AVG(g.grade) ,0)  FROM grades g
+                         where test_subject='$sub[0]'";
+             
+             $result_avreg=mysqli_query($link,$sql_avreg);
+             
+             $result_avreg=mysqli_fetch_all($result_avreg);
+            
+             $grade_avrge=$result_avreg[0][0];
+ 
+             $arr_avrge_grades[$avrge_grade_subject]=$grade_avrge;
+             global $arr_avrge_grades;
+             
+         }
+     }
+
+       
 
 unset($_POST['student_name']);
 ?>
@@ -148,7 +210,7 @@ unset($_POST['student_name']);
                                         <th scope="col">Subject</th>
                                         <th scope="col">Test Subject</th>
                                         <th scope="col">Grade</th>
-                                        <th scope="col">avrg</th>
+                                        <th scope="col">Relative to the class grade</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -156,7 +218,7 @@ unset($_POST['student_name']);
                             <?php
                                     for($i=0;$i<count($grades);$i++)
                                     {
-                                        grade_students_table_row($grades[$i],$i);
+                                        grade_students_table_row($grades[$i],$i,$arr_avrge_grades);
                                     }
                                endif 
                             ?> 
@@ -195,7 +257,7 @@ unset($_POST['student_name']);
                                         <th scope="col">Test Subject</th>
                                         <th scope="col">Grade</th>
                                         <th scope="col">Date</th>
-                                        <th scope="col">avrg</th>
+                                        <th scope="col">Relative to class grade</th>
                                         
                                     </tr>
                                 </thead>
@@ -204,7 +266,7 @@ unset($_POST['student_name']);
                             <?php
                                     for($i=0;$i<count($grades);$i++)
                                     {
-                                        grade_teachers_table_row($grades[$i],$i);
+                                        grade_teachers_table_row($grades[$i],$i,$arr_avrge_grades);
                                     }
                                endif 
                             ?> 

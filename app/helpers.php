@@ -67,7 +67,7 @@ if(!function_exists('last_value')){
 
      if(!function_exists('grade_students_table_row')){
                 
-        function grade_students_table_row($grade,$iternum){
+        function grade_students_table_row($grade,$iternum,$average_grade_array){
             /***
              * to make the tables for STUDENTS  
              * take row from asositive array and 
@@ -75,18 +75,26 @@ if(!function_exists('last_value')){
              * 
              * @param array -> a row from the full array from the db 
              * @param integer -> the number of iteration - to dislay in the table   
+            *@parm array -> associative array of grades - name_subject->grade
             *
             * @return string -> return a full row for table in html  
              */
             extract($grade);
             $count=$iternum+1;
+            if($grade > $average_grade_array[$test_subject]){
+                $relative_to_average="<span class=\" text-success \">above average grade</span>";
+            }elseif($grade== $average_grade_array[$test_subject]){
+                $relative_to_average="<span class=\" text-warning \"> average grade</span>";
+            }else{
+                $relative_to_average="<span class=\" text-danger \"> below average grade</span>";
+            }
         echo  " <tr>
                 <th scope='row'>$count</th>
                 <td>$date</td>
                 <td>$subject</td>
                 <td>$test_subject</td>
                 <td>$grade</td>
-                <td>avrge</td>
+                <td>$relative_to_average</td>
                 </tr>
                 ";
             }
@@ -95,7 +103,7 @@ if(!function_exists('last_value')){
 
      if(!function_exists('grade_teachers_table_row')){
                 
-        function grade_teachers_table_row($grade,$iternum){
+        function grade_teachers_table_row($grade,$iternum,$average_grade_array){
             /***
              * to make the table for TEACHERS 
              * take row from asositive array and 
@@ -103,11 +111,19 @@ if(!function_exists('last_value')){
              * 
              * @param array -> a row from the full array from the db 
              * @param integer -> the number of iteration - to dislay in the table   
-            *
+            * @parm array -> associative array of grades - name_subject->grade
+
             * @return string -> return a full row for table in html  
              */
             extract($grade);
             $count=$iternum+1;
+            if($grade > $average_grade_array[$test_subject]){
+                $relative_to_average="<span class=\" text-success \">above average grade</span>";
+            }elseif($grade== $average_grade_array[$test_subject]){
+                $relative_to_average="<span class=\" text-warning \"> average grade</span>";
+            }else{
+                $relative_to_average="<span class=\" text-danger \">below average grade</span>";
+            }
         echo  " <tr>
                 <th scope='row'>$count</th>
                 <td>$class</td>
@@ -116,11 +132,13 @@ if(!function_exists('last_value')){
                 <td>$test_subject</td>
                 <td>$grade</td>
                 <td>$date</td>
-                <td>avrge</td>
+                <td>$relative_to_average</td>
                 </tr>
                 ";
             }
      }
+
+
 
 
 ?>
