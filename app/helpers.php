@@ -139,6 +139,60 @@ if(!function_exists('last_value')){
      }
 
 
+     if(!function_exists('contact_students_table_row')){
+                
+        function contact_students_table_row($contacts,$iternum){
+            /***
+             * to make the table for TEACHERS 
+             * take row from asositive array and 
+             * change it so it will be display in html table form row 
+             * 
+             * @param array -> a row from the full array from the db 
+             * @param integer -> the number of iteration - to dislay in the table   
+            * @parm array -> associative array of grades - name_subject->grade
+
+            * @return string -> return a full row for table in html  
+             */
+            extract($contacts);
+            $count=$iternum+1;
+        echo  " <tr>
+                <th scope='row'>$count</th>
+                <td>$name</td>
+                <td>$class</td>
+                <td>$phone_number</td>
+                </tr>
+                ";
+            }
+     }
+
+
+     
+     if(!function_exists('contact_teachers_table_row')){
+                
+        function contact_teachers_table_row($contacts,$iternum){
+            /***
+             * to make the table for TEACHERS 
+             * take row from asositive array and 
+             * change it so it will be display in html table form row 
+             * 
+             * @param array -> a row from the full array from the db 
+             * @param integer -> the number of iteration - to dislay in the table   
+            * @parm array -> associative array of grades - name_subject->grade
+
+            * @return string -> return a full row for table in html  
+             */
+            extract($contacts);
+            $count=$iternum+1;
+        echo  " <tr>
+                <th scope='row'>$count</th>
+                <td>$name</td>
+                <td>$class</td>
+                <td>$address</td>
+                <td>$phone_number</td>
+                </tr>
+                ";
+            }
+     }
 
 
 ?>
