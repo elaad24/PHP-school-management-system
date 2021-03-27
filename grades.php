@@ -47,7 +47,7 @@ if ($_SESSION['permission_group']==2){
     
 }
 
-if ($_SESSION['permission_group']==1 ){
+if ($_SESSION['permission_group']==1 or $_SESSION['permission_group']==0  ){
 
     
     #check if there is a search for specific student
@@ -75,7 +75,6 @@ if ($_SESSION['permission_group']==1 ){
         
         $result_user_name_search=mysqli_fetch_all($result_user_name_search);
         
-        echo "</br>";
         $user_list=[];
 
         foreach($result_user_name_search as $name){
@@ -225,8 +224,8 @@ unset($_POST['student_name']);
 
                             
                                 <?php 
-                            /* teachers grades table */
-                                if ($_SESSION['permission_group']==1):
+                            /* teachers / admin grades table */
+                                if ($_SESSION['permission_group']==1 or $_SESSION['permission_group']==0):
                             ?>
 
                         <form method="POST" action="" class=" mt-2 col-lg-4 col-sm-12">
