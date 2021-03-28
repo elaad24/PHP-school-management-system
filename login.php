@@ -48,6 +48,11 @@ if(isset($_POST['submit'])){
 
             if(password_verify($password,$user['password'])){
                 login_user($user['id'],$user['name'],$user['permission_group']);
+                if($_GET['return_to']){
+                    header("location: ./$_GET[return_to]");
+                }else{
+                    header("location: ./");
+                }
             }
             
         }

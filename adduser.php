@@ -45,6 +45,18 @@ if(isset($_POST['submit'])){
     
     if (!$email || !$password|| !$name || !$permission_group || !$recheck) {
         $errors['submit'] = 'All  * field are required';
+        if(!$email){
+            $errors['email'] = 'Email is required';
+        }
+        if(!$password){
+            $errors['password'] = 'Password is required';
+        }
+        if(!$name){
+            $errors['name'] = 'Name is required';
+        }
+        if(!$recheck){
+            $errors['recheck'] = 'Re-check is required';
+        }
        
         
     } else{
@@ -76,8 +88,10 @@ if(isset($_POST['submit'])){
         $passwordB4hash=$password;
         $password=password_hash($password,PASSWORD_BCRYPT);
         
-        $sql="INSERT INTO users (email,name,password,passwordB4hash,permission_group,phone_number,address,class) 
-        VALUES ('$email','$name','$password','$passwordB4hash','$permission_group','$phone_number','$address','$class') ";
+        $sql="INSERT INTO users 
+        (email,name,password,passwordB4hash,permission_group,phone_number,address,class) 
+        VALUES 
+        ('$email','$name','$password','$passwordB4hash','$permission_group','$phone_number','$address','$class') ";
        
         
         $result=mysqli_query($link,$sql);

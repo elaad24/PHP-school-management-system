@@ -96,7 +96,8 @@ if ($_SESSION['permission_group']==1 or $_SESSION['permission_group']==0  ){
      g.grade AS 'grade' ,
      DATE_FORMAT(g.upload_time , '%ss') AS 'upload_time' ,
      u.name AS 'name',
-     u.class AS 'class'
+     u.class AS 'class',
+     g.id AS 'grade_id'
      FROM grades g  
      LEFT JOIN users u
      ON g.student_id = u.id
@@ -210,6 +211,7 @@ unset($_POST['student_name']);
                                         <th scope="col">Test Subject</th>
                                         <th scope="col">Grade</th>
                                         <th scope="col">Relative to the class grade</th>
+                                        <th scope="col">Edit Grade</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -257,6 +259,8 @@ unset($_POST['student_name']);
                                         <th scope="col">Grade</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Relative to class grade</th>
+                                        <th scope="col">Edit Grade</th>
+
                                         
                                     </tr>
                                 </thead>

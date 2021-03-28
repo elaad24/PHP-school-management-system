@@ -21,7 +21,7 @@ include_once "tpl/header.php" ;
                 <p class="mt-4">
                     <?php if(!user_auth()):?>
                     <a href="./login.php" class="btn btn-outline-success btn-lg">
-                        Log in 
+                        Log in
                     </a>
                     <?php endif ?>
                 </p>
@@ -39,11 +39,15 @@ include_once "tpl/header.php" ;
                         <h3 class="mb-0 text-primary">Grades </h3>
                         <div class="mb-1 text-muted">last grade </div>
                         <p class="card-text mb-auto">GRADE AND DATE</p>
+                        <?php if(user_auth()):?>
                         <a href="./grades.php" class="stretched-link">SEE FULL LIST &rightarrow;</a>
+                        <?php else :?>
+                        <a href="./login.php" class="stretched-link">SEE FULL LIST &rightarrow;</a>
+                        <?php endif?>
                     </div>
                     <div class="col-auto d-none d-lg-block ">
-                      <i  class="fab fa-autoprefixer fa-7x mr-5 mt-3"></i>
-                  </div>
+                        <i class="fab fa-autoprefixer fa-7x mr-5 mt-3"></i>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -54,14 +58,18 @@ include_once "tpl/header.php" ;
                         <h3 class="mb-0 text-primary">CONTACTS </h3>
                         <div class="mb-1 text-muted">LAST UPDATED @ DATE </div>
                         <p class="card-text mb-auto">CONTACT LIST</p>
+                        <?php if(user_auth()):?>
                         <a href="./contacts.php" class="stretched-link">SEE FULL LIST &rightarrow;</a>
+                        <?php else :?>
+                        <a href="./login.php" class="stretched-link">SEE FULL LIST &rightarrow;</a>
+                        <?php endif?>
                     </div>
                     <div class="col-auto d-none d-lg-block ">
-                      <i  class="fas fa-address-book fa-7x mr-5 mt-3"></i>
-                  </div>
+                        <i class="fas fa-address-book fa-7x mr-5 mt-3"></i>
+                    </div>
                 </div>
             </div>
-           
+
         </div>
     </section>
 </main>

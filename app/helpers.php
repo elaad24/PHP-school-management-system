@@ -112,8 +112,8 @@ if(!function_exists('last_value')){
          * 
          * @param array -> a row from the full array from the db 
          * @param integer -> the number of iteration - to dislay in the table   
-         * @parm array -> associative array of grades - name_subject->grade
-         *
+         * @param array -> associative array of grades - name_subject->grade
+         * 
          * @return string -> return a full row for table in html  
          */
         function grade_teachers_table_row($grade,$iternum,$average_grade_array){
@@ -136,6 +136,12 @@ if(!function_exists('last_value')){
                 <td>$grade</td>
                 <td>$date</td>
                 <td>$relative_to_average</td>
+                <td>
+                <a  href='./edit_grade.php?gid=$grade_id'
+                    <i class='fas fa-edit'></i>
+                Edit
+                </a>
+                </td>
                 </tr>
                 ";
             }
@@ -257,6 +263,7 @@ if(!function_exists('last_value')){
                 ";
             }
      }
+
 
 
 ?>
