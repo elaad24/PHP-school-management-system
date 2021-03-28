@@ -1,6 +1,6 @@
 <?php
 
-use function PHPSTORM_META\type;
+
 
 require_once "app/helpers.php";
 require_once "app/db_config.php";
